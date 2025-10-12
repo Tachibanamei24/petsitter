@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetSitter - Professional Pet Care Services</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-paw"></i>
+                <span>PetSitter</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link" data-role="user">Home</a></li>
+                <li><a href="#sitters" class="nav-link" data-role="user">Find Sitters</a></li>
+                <li><a href="#booking" class="nav-link" data-role="user">Book Service</a></li>
+                <li><a href="#history" class="nav-link" data-role="user">My Bookings</a></li>
+                <li><a href="#profile" class="nav-link" data-role="user">Profile</a></li>
+                <li><a href="#admin" class="nav-link hidden" id="admin-nav-link" data-role="admin">Admin Dashboard</a></li>
+                <li><a href="#login" class="nav-link" id="auth-link">Login</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="login" class="hero login-section" style="display: none;">
+        <div class="hero-content text-center">
+            <h1>Welcome Back!</h1>
+            <p>Enter your credentials to access your account.</p>
+            
+            <div class="booking-form" style="background: white; color: #333; padding: 2rem; border-radius: 12px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                <h3>Account Login</h3>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" placeholder="user@pet.com or admin@pet.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" placeholder="password or adminpass" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+                <p class="mt-3" style="font-size: 0.9rem; color: #666;">
+                    Don't have an account? 
+                    <a href="#signup" onclick="showSection('signup')" style="color: #667eea; font-weight: 600;">Sign Up Here</a>
+                </p>
+                <p class="mt-2" style="font-size: 0.9rem; color: #666;">
+                    Forgot your password? 
+                    <a href="#forgot-password" onclick="showSection('forgot-password')" style="color: #667eea; font-weight: 600;">Reset Password</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="forgot-password" class="hero login-section" style="display: none;">
+        <div class="hero-content text-center">
+            <h1>Reset Your Password</h1>
+            <p>Enter your email address to receive password reset instructions.</p>
+            
+            <div class="booking-form" style="background: white; color: #333; padding: 2rem; border-radius: 12px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                <h3>Password Recovery</h3>
+                <form id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="resetEmail">Email Address:</label>
+                        <input type="email" id="resetEmail" required placeholder="Enter your registered email">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send Reset Link</button>
+                </form>
+                <p class="mt-3" style="font-size: 0.9rem; color: #666;">
+                    Remember your password? 
+                    <a href="#login" onclick="showSection('login')" style="color: #667eea; font-weight: 600;">Back to Login</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="signup" class="hero login-section" style="display: none;">
+        <div class="hero-content text-center">
+            <h1>Create Your Account</h1>
+            <p>Register as a new Pet Owner.</p>
+            
+            <div class="booking-form" style="background: white; color: #333; padding: 2rem; border-radius: 12px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                <h3>New User Registration</h3>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signupName">Full Name:</label>
+                        <input type="text" id="signupName" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email:</label>
+                        <input type="email" id="signupEmail" required placeholder="name@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password:</label>
+                        <input type="password" id="signupPassword" required placeholder="Choose a secure password" oninput="checkPasswordStrength()">
+                        <div id="passwordStrength" class="password-strength"></div>
+                        <div class="password-requirements">
+                            <small>Password must contain:</small>
+                            <ul id="passwordRequirements">
+                                <li id="req-length" class="requirement">At least 8 characters</li>
+                                <li id="req-uppercase" class="requirement">One uppercase letter</li>
+                                <li id="req-lowercase" class="requirement">One lowercase letter</li>
+                                <li id="req-number" class="requirement">One number</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" required placeholder="Confirm your password" oninput="checkPasswordMatch()">
+                        <div id="passwordMatch" class="password-match"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+                </form>
+                <p class="mt-3" style="font-size: 0.9rem; color: #666;">
+                    Already have an account? 
+                    <a href="#login" onclick="showSection('login')" style="color: #667eea; font-weight: 600;">Log In</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="home" class="hero" style="display: none;">
+        <div class="hero-content">
+            <h1>Find the Perfect Pet Sitter</h1>
+            <p>Connect with trusted local pet sitters and dog walkers in your area</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="showSection('sitters')">Find Sitters</button>
+                <button class="btn btn-secondary" onclick="showSection('booking')">Book Now</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <i class="fas fa-dog"></i>
+        </div>
+    </section>
+
+    <section id="admin" class="admin-section" style="display: none;">
+        <div class="container">
+            <div class="admin-header">
+                <h2>Admin Dashboard</h2>
+                <button class="btn btn-danger" onclick="logoutUser()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalSitters">0</h3>
+                        <p>Active Sitters</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalBookings">0</h3>
+                        <p>Total Bookings</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalRevenue">₱0</h3>
+                        <p>Total Revenue</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="showAdminPanel('overview')">Overview</button>
+                <button class="tab-btn" onclick="showAdminPanel('sitter-management')">Sitter Management</button>
+                <button class="tab-btn" onclick="showAdminPanel('user-management')">User Management</button>
+                <button class="tab-btn" onclick="showAdminPanel('booking-management')">Booking Management</button>
+            </div>
+
+            <div id="overview" class="admin-panel">
+                <h3>System Overview</h3>
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <h4>Recent Activity</h4>
+                        <div id="recentActivity" class="activity-list">
+                            </div>
+                    </div>
+                    <div class="overview-card">
+                        <h4>User Growth</h4>
+                        <div id="userGrowthChart" class="growth-chart">
+                            <div class="chart-placeholder">
+                                <i class="fas fa-chart-line"></i>
+                                <p>User registration trends</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <h4>Popular Services</h4>
+                        <div id="popularServices" class="services-list">
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sitter-management" class="admin-panel hidden">
+                <h3>Pet Sitter Management</h3>
+                <div class="management-grid" id="sitterManagementGrid">
+                    </div>
+            </div>
+
+            <div id="user-management" class="admin-panel hidden">
+                <h3>User Account Management</h3>
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Bookings</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userManagementTableBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="booking-management" class="admin-panel hidden">
+                <h3>Booking Management</h3>
+                <div class="booking-filters">
+                    <select id="bookingStatusFilter" onchange="filterAdminBookings()">
+                        <option value="">All Status</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <input type="text" id="bookingSearch" placeholder="Search bookings..." onkeyup="filterAdminBookings()">
+                </div>
+                <table class="booking-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Sitter</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingManagementTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    
+    <section id="sitters" class="sitters-section" style="display: none;">
+        <div class="container">
+            <h2>Available Pet Sitters</h2>
+            <div class="search-filters">
+                <input type="text" id="searchSitters" placeholder="Search by name or location..." onkeyup="filterSitters()">
+                <select id="serviceFilter" onchange="filterSitters()">
+                    <option value="">All Services</option>
+                    <option value="walking">Dog Walking</option>
+                    <option value="sitting">Pet Sitting</option>
+                    <option value="boarding">Pet Boarding</option>
+                    <option value="grooming">Grooming</option>
+                </select>
+                <select id="priceFilter" onchange="filterSitters()">
+                    <option value="">Any Price</option>
+                    <option value="0-20">₱0 - ₱20</option>
+                    <option value="20-40">₱20 - ₱40</option>
+                    <option value="40-60">₱40 - ₱60</option>
+                    <option value="60+">₱60+</option>
+                </select>
+            </div>
+            <div class="sitters-grid" id="sittersGrid">
+                </div>
+        </div>
+    </section>
+
+    <section id="booking" class="booking-section" style="display: none;">
+        <div class="container">
+            <h2>Book a Service</h2>
+            <div class="booking-container">
+                <div class="booking-form">
+                    <h3>Service Details</h3>
+                    <form id="bookingForm">
+                        <div class="form-group">
+                            <label for="selectedSitter">Select Sitter:</label>
+                            <select id="selectedSitter" required>
+                                <option value="">Choose a sitter...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="serviceType">Service Type:</label>
+                            <select id="serviceType" required>
+                                <option value="">Select service...</option>
+                                <option value="walking">Dog Walking</option>
+                                <option value="sitting">Pet Sitting</option>
+                                <option value="boarding">Pet Boarding</option>
+                                <option value="grooming">Grooming</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="petName">Pet Name:</label>
+                            <input type="text" id="petName" required placeholder="Enter your pet's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="petType">Pet Type:</label>
+                            <select id="petType" required>
+                                <option value="">Select pet type...</option>
+                                <option value="dog">Dog</option>
+                                <option value="cat">Cat</option>
+                                <option value="bird">Bird</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingDate">Date:</label>
+                            <input type="date" id="bookingDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingTime">Time:</label>
+                            <input type="time" id="bookingTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (hours):</label>
+                            <input type="number" id="duration" min="1" max="24" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="specialInstructions">Special Instructions:</label>
+                            <textarea id="specialInstructions" rows="3" placeholder="Any special care instructions..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Book Service</button>
+                    </form>
+                </div>
+                <div class="booking-summary">
+                    <h3>Booking Summary</h3>
+                    <div id="bookingSummary">
+                        <p>Select a sitter and service to see pricing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="history" class="history-section" style="display: none;">
+        <div class="container">
+            <h2>Service History</h2>
+            <div class="history-filters">
+                <select id="statusFilter" onchange="filterHistory()">
+                    <option value="">All Status</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <input type="text" id="searchHistory" placeholder="Search bookings..." onkeyup="filterHistory()">
+            </div>
+            <div class="bookings-list" id="bookingsList">
+                </div>
+        </div>
+    </section>
+
+    <section id="profile" class="profile-section" style="display: none;">
+        <div class="container">
+            <div class="profile-header">
+                <h2>My Profile</h2>
+                <button class="btn btn-danger" onclick="logoutUser()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            <div class="profile-container">
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 id="profileNameDisplay">John Doe</h3>
+                    <p>Pet Owner</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="totalBookings">0</span>
+                            <span class="stat-label">Total Bookings</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="totalSpent">₱0</span>
+                            <span class="stat-label">Total Spent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <h3>Account Information</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="fullName">Full Name:</label>
+                            <input type="text" id="fullName" value="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" value="john.doe@email.com" readonly style="background: #eee;">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone:</label>
+                            <input type="tel" id="phone" value="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                            <textarea id="address" rows="2">123 Main St, City, State 12345</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <h2>Payment</h2>
+            <div class="payment-summary">
+                <h3>Booking Summary</h3>
+                <div id="paymentDetails"></div>
+            </div>
+            <div class="payment-form">
+                <h3>Payment Information</h3>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Payment Method:</label>
+                        <div class="payment-methods">
+                            <label class="payment-method-option">
+                                <input type="radio" name="paymentMethod" value="gcash" checked>
+                                <span class="payment-method-card">
+                                    <i class="fas fa-qrcode" style="color: #667eea;"></i>
+                                    GCash
+                                </span>
+                            </label>
+                            <label class="payment-method-option">
+                                <input type="radio" name="paymentMethod" value="maya">
+                                <span class="payment-method-card">
+                                    <i class="fas fa-qrcode" style="color: #667eea;"></i>
+                                    Maya
+                                </span>
+                            </label>
+                            <label class="payment-method-option">
+                                <input type="radio" name="paymentMethod" value="cash">
+                                <span class="payment-method-card">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    Cash (Upon Service)
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="onlinePaymentFields" class="payment-fields">
+                        <div id="qrCodeDisplay" class="text-center" style="padding: 1rem; border: 1px dashed #667eea; border-radius: 8px; margin-bottom: 1.5rem;">
+                            <img id="paymentQrCode" src="https://via.placeholder.com/150x150?text=Scan+QR" alt="QR Code" style="width: 150px; height: 150px; margin-bottom: 10px; opacity: 0.8;">
+                            <p id="qrInstructions" style="font-weight: 600; color: #333; font-size: 0.9rem;">Scan the QR code above using your GCash app.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="onlineNumber">Your Mobile Number (for verification):</label>
+                            <input type="tel" id="onlineNumber" placeholder="09XX XXX XXXX" maxlength="11" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="onlineReference">Reference Number (from online payment):</label>
+                            <input type="text" id="onlineReference" placeholder="Enter reference number (Optional)">
+                        </div>
+                        <div class="gcash-info">
+                            <p><i class="fas fa-info-circle"></i> Complete your online payment before the service date. Your booking is pending payment confirmation.</p>
+                        </div>
+                    </div>
+                    
+                    <div id="cashFields" class="payment-fields" style="display: none;">
+                        <div class="billing-statement" style="border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; background: #fff;">
+                            <h4 style="margin-top: 0; border-bottom: 2px dashed #f1f3f4; padding-bottom: 0.5rem; margin-bottom: 1rem;">Official Billing Statement (Cash)</h4>
+                            
+                            <div id="cashBillingDetails">
+                                </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e9ecef;">
+                                <div class="cash-instructions">
+                                    <p style="font-size: 0.9rem; color: #555; font-weight: 600;">Payment Method: Cash (Pay Sitter)</p>
+                                    <p style="font-size: 0.85rem; color: #dc3545;">**Please prepare the exact amount upon service completion.**</p>
+                                </div>
+                                
+                                <div class="qr-alternative text-center">
+                                    <p style="font-size: 0.75rem; color: #888; margin-bottom: 5px;">*Or Scan to Pay via GCash/Maya*</p>
+                                    <img src="https://via.placeholder.com/100x100?text=SCAN+HERE" alt="Payment QR Code" style="width: 100px; height: 100px; opacity: 0.7;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content success-modal">
+            <i class="fas fa-check-circle"></i>
+            <h2>Booking Confirmed!</h2>
+            <p>Your pet care service has been successfully booked.</p>
+            <button class="btn btn-primary" onclick="closeSuccessModal()">OK</button>
+        </div>
+    </div>
+
+    <script src="apps.js"></script>
+</body>
+</html>
