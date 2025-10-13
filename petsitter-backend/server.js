@@ -30,7 +30,33 @@ let sittersData = [
 ];
 
 // --- MIDDLEWARE ---
-app.use(cors()); 
+// Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
+const allowedOrigins = [
+    // Ang URL ng iyong deployed Render Frontend (kung meron)
+    'https://petsitter-3.onrender.com', 
+    // Iyong local development server ports (para sa testing)
+    'http://127.0.0.1:5500', 
+    'http://localhost:5500', 
+    'http://localhost:3000',
+    'http://127.0.0.1', // Iba pang default local host
+    'http://localhost'
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Pahintulutan ang walang origin (e.g., Postman/Nightingale) at ang mga nasa listahan
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions)); // Ginamit ang bagong corsOptions
 app.use(express.json());
 
 // --- EMAIL TRANSPORTER SETUP ---
