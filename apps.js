@@ -2,7 +2,7 @@
 
 // --- API CONFIGURATION AND GLOBAL STATE ---
 // WARNING: This URL must match the PORT you set in server.js
-const API_BASE_URL = 'http://localhost:8080/api'; 
+const API_BASE_URL = 'https://petsitter-3.api.onrender.com/api'; 
 
 // SIMULATED DATA (Used only for front-end rendering while backend is loading/not complete)
 // This initial data is here so the UI loads even if the server is offline.
