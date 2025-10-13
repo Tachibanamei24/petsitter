@@ -61,12 +61,19 @@ app.use(express.json());
 
 // --- EMAIL TRANSPORTER SETUP ---
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com', // Explicit host
+    port: 587,              // Standard port for STARTTLS
+    secure: false,          // Use STARTTLS (not SMTPS)
     auth: {
         user: process.env.EMAIL_USER, 
         pass: process.env.EMAIL_PASS  
+    },
+    // Adding a higher timeout value can sometimes help with network latency
+    tls: {
+        ciphers: 'SSLv3' // Sometimes forcing SSLv3 can resolve handshake issues, but port 587 is usually the fix.
     }
 });
+
 
 // --- EMAIL DEBUGGING AND SERVER START CHECK ---
 // Tiyakin na gumagana ang App Password bago simulan ang Express server.
