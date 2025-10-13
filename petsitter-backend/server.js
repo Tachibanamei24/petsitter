@@ -59,18 +59,22 @@ const corsOptions = {
 app.use(cors(corsOptions)); // Ginamit ang bagong corsOptions
 app.use(express.json());
 
-// --- EMAIL TRANSPORTER SETUP ---
+// server.js - EMAIL TRANSPORTER SETUP
+
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com', // Explicit host
-    port: 587,              // Standard port for STARTTLS
-    secure: false,          // Use STARTTLS (not SMTPS)
+    // Ito ang host server address
+    host: 'smtp.gmail.com', 
+    port: 587,              
+    secure: false,          
     auth: {
+        // Ito ang iyong Gmail email address (mula sa .env file)
         user: process.env.EMAIL_USER, 
+        // Ito ang iyong 16-character App Password (mula sa .env file)
         pass: process.env.EMAIL_PASS  
     },
-    // Adding a higher timeout value can sometimes help with network latency
     tls: {
-        ciphers: 'SSLv3' // Sometimes forcing SSLv3 can resolve handshake issues, but port 587 is usually the fix.
+        // Makakatulong ito sa pagresolba ng network handshake issues
+        rejectUnauthorized: false 
     }
 });
 
