@@ -32,8 +32,8 @@ let sittersData = [
 // --- MIDDLEWARE ---
 // Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
 const allowedOrigins = [
-    // Ang URL ng iyong deployed Render Frontend (kung meron)
-    'https://petsitter-3.onrender.com', 
+    // Ang URL ng iyong deployed Render Frontend (DAPAT AY ANG IYONG LIVE RENDER URL)
+    'https://petsitter-x3nr.onrender.com', // I-UPDATE ang URL na ito sa iyong final Render frontend URL
     // Iyong local development server ports (para sa testing)
     'http://127.0.0.1:5500', 
     'http://localhost:5500', 
@@ -59,19 +59,20 @@ const corsOptions = {
 app.use(cors(corsOptions)); // Ginamit ang bagong corsOptions
 app.use(express.json());
 
-// --- EMAIL TRANSPORTER SETUP ---
-// Gagamitin natin ang explicit HOST at PORT 587 (STARTTLS) para iwasan ang Render network/firewall issues.
+// --- EMAIL TRANSPORTER SETUP (SWITCHED TO GENERIC SMTP FOR SUPABASE/OTHER PROVIDER) ---
+// Gagamitin ang EMAIL_HOST, EMAIL_USER, at EMAIL_PASS mula sa Environment Variables.
+// Tiyakin na ang EMAIL_HOST ay ang SMTP server ng Supabase/SendGrid/Mailgun.
 
 const transporter = nodemailer.createTransport({
-    // Ang 'host' ay ang pangalan ng server, HINDI ang iyong email.
-    host: 'smtp.gmail.com', 
-    // Port 587 ang pinaka-compatible para sa mga cloud deployment
+    // Gagamit ng generic host, hindi na hardcoded na 'smtp.gmail.com'
+    host: process.env.EMAIL_HOST, 
+    // Port 587 ang pinaka-compatible para sa karamihan ng SMTP providers
     port: 587,              
     secure: false,          // secure: false enables STARTTLS on port 587
     auth: {
-        // Ito ang iyong Gmail address (mula sa Render Env Vars)
+        // Ito ang iyong SMTP Username (mula sa Render Env Vars)
         user: process.env.EMAIL_USER, 
-        // Ito ang iyong App Password (mula sa Render Env Vars)
+        // Ito ang iyong SMTP Password (mula sa Render Env Vars)
         pass: process.env.EMAIL_PASS  
     },
     // Opsyonal: Ito ay makakatulong sa pagresolba ng SSL/TLS handshake issues
@@ -81,14 +82,14 @@ const transporter = nodemailer.createTransport({
 });
 
 // --- EMAIL DEBUGGING AND SERVER START CHECK ---
-// Tiyakin na gumagana ang App Password bago simulan ang Express server.
+// Tiyakin na gumagana ang SMTP credentials bago simulan ang Express server.
 transporter.verify(function(error, success) {
     if (error) {
         console.log("----------------------------------------------------------------------");
-        console.error("KRITIKAL NA ERROR: HINDI MAKAKONEKTA SA GMAIL!");
+        console.error("KRITIKAL NA ERROR: HINDI MAKAKONEKTA SA SMTP SERVER!");
         console.error("Ito ang EXAKTANG problema (Authentication/Network Issue):", error.message);
         console.log("TIYAKIN:");
-        console.log("1. Tama ang iyong EMAIL_USER at EMAIL_PASS (Dapat App Password).");
+        console.log("1. Tama ang iyong EMAIL_HOST, EMAIL_USER at EMAIL_PASS (Dapat SMTP Credentials).");
         console.log("2. Naka-install ang dependencies (express, dotenv, nodemailer, cors).");
         console.log("----------------------------------------------------------------------");
         // Huwag simulan ang server
@@ -105,8 +106,8 @@ transporter.verify(function(error, success) {
 
 // --- API ROUTES ---
 
-// 1. POST /api/auth/signup - User Registration
-app.post('/api/auth/signup', (req, res) => {
+// 1. POST /api/auth/signup - User Registration (UPDATED TO SEND WELCOME EMAIL)
+app.post('/api/auth/signup', async (req, res) => { // NOTE: Added 'async'
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -128,7 +129,38 @@ app.post('/api/auth/signup', (req, res) => {
 
     usersData.push(newUser);
     console.log("[SERVER] New User Registered:", newUser.email);
-    res.status(201).json({ message: "Account created successfully! Please log in." });
+    
+    // --- EMAIL SENDING FOR SIGNUP CONFIRMATION ---
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: newUser.email, 
+            subject: `Welcome to PetSitter, ${newUser.name}!`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #28a745; padding: 20px;">
+                    <h2 style="color: #28a745;">Registration Successful!</h2>
+                    <p>Hello ${newUser.name},</p>
+                    <p>Thank you for registering with PetSitter! Your account is now ready.</p>
+                    <p>You can log in using your email address:</p>
+                    <h3 style="color: #007bff;">${newUser.email}</h3>
+                    <p>Start browsing our available sitters to find the perfect match for your pet.</p>
+                    <hr>
+                    <p style="font-size: 0.9em; color: #888;">If you did not register for this service, please disregard this email.</p>
+                </div>
+            `,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`[EMAIL SUCCESS] Welcome email sent to ${newUser.email}. Message ID: ${info.messageId}`);
+        
+        // Success response
+        res.status(201).json({ message: "Account created and welcome email sent!", user: { id: newUser.id, name: newUser.name } });
+
+    } catch (error) {
+        console.error("[EMAIL ERROR] Failed to send welcome email:", error.stack);
+        // Even if the email fails, the user is still registered, but we return a warning.
+        res.status(201).json({ message: "Account created successfully, but failed to send welcome email.", user: { id: newUser.id, name: newUser.name } });
+    }
 });
 
 // 2. POST /api/auth/login - User Login
