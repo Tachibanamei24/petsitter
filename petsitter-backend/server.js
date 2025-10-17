@@ -59,25 +59,26 @@ const corsOptions = {
 app.use(cors(corsOptions)); // Ginamit ang bagong corsOptions
 app.use(express.json());
 
-// server.js - EMAIL TRANSPORTER SETUP
+// --- EMAIL TRANSPORTER SETUP ---
+// Gagamitin natin ang explicit HOST at PORT 587 (STARTTLS) para iwasan ang Render network/firewall issues.
 
 const transporter = nodemailer.createTransport({
-    // Ito ang host server address
+    // Ang 'host' ay ang pangalan ng server, HINDI ang iyong email.
     host: 'smtp.gmail.com', 
+    // Port 587 ang pinaka-compatible para sa mga cloud deployment
     port: 587,              
-    secure: false,          
+    secure: false,          // secure: false enables STARTTLS on port 587
     auth: {
-        // Ito ang iyong Gmail email address (mula sa .env file)
+        // Ito ang iyong Gmail address (mula sa Render Env Vars)
         user: process.env.EMAIL_USER, 
-        // Ito ang iyong 16-character App Password (mula sa .env file)
+        // Ito ang iyong App Password (mula sa Render Env Vars)
         pass: process.env.EMAIL_PASS  
     },
+    // Opsyonal: Ito ay makakatulong sa pagresolba ng SSL/TLS handshake issues
     tls: {
-        // Makakatulong ito sa pagresolba ng network handshake issues
         rejectUnauthorized: false 
     }
 });
-
 
 // --- EMAIL DEBUGGING AND SERVER START CHECK ---
 // Tiyakin na gumagana ang App Password bago simulan ang Express server.
