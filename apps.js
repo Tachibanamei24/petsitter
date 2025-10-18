@@ -11,7 +11,7 @@ const cors = require('cors');
 const app = express();
 // Binago ang port para sa testing
 const PORT = process.env.PORT || 8080; 
-const API_BASE_URL = 'https://petsitter-x3nr.onrender.com';
+const API_BASE_URL = 'https://petsitter-x3nr.onrender.com/api/sitters';
 
 // Load environment variables from a .env file
 dotenv.config();
