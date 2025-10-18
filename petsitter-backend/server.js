@@ -1,20 +1,17 @@
 // server.js (Node.js Express Server for PetSitter API)
 // *******************************************************************
-// Tandaan: Tinanggal na ang lahat ng Nodemailer setup at dependencies
-// sa pag-send ng email. Gagamitin na lang ang Supabase Auth para dito.
+// Tandaan: Ginawa na ang kailangang pagbabago para sa CORS fix.
 // *******************************************************************
 
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors'); 
 const app = express();
-// Binago ang port para sa testing
 const PORT = process.env.PORT || 8080; 
 
-// Load environment variables from a .env file
 dotenv.config();
 
-// --- DATABASE SIMULATION (TANDAAN: Mawawala ang data kapag ni-restart ang server) ---
+// --- DATABASE SIMULATION ---
 let usersData = [
     { id: 101, name: "Standard User", email: "user@pet.com", password: "password", role: "user", phone: '+1 (555) 123-4567', address: '123 Main St, City, State 12345' },
     { id: 102, name: "Admin Manager", email: "admin@pet.com", password: "adminpass", role: "admin", phone: '', address: '' },
@@ -29,13 +26,15 @@ let sittersData = [
 ];
 
 // --- MIDDLEWARE ---
-// Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
+// CRITICAL FIX: DINAGDAG na ang GitHub Pages URL!
 const allowedOrigins = [
-    // TAMA: LIVE Render Backend API URL (WALANG /api)
+    // LIVE Render Backend API URL (WALANG /api)
     'https://petsitter-x3nr.onrender.com', 
-    // ✅ KRITIKAL: GITHUB PAGES FRONTEND URL - ITO ANG KULANG KANINA!
-    'https://tachibanamei24.github.io/petsitter', 
-    // Iyong local development server ports (para sa testing)
+    // ✅ GITHUB PAGES FRONTEND URL - ITO ANG KAILANGAN!
+    'https://tachibanamei24.github.io', 
+    // Maaaring kailangan mo rin ang specific repository path:
+    'https://tachibanamei24.github.io/petsitter',
+    // Local development server ports (para sa testing)
     'http://127.0.0.1:5500', 
     'http://localhost:5500', 
     'http://localhost:3000',
@@ -45,11 +44,10 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: (origin, callback) => {
-        // Pahintulutan ang walang origin (e.g., Postman/Nightingale) at ang mga nasa listahan
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error(`Not allowed by CORS: ${origin}`));
         }
     },
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -57,21 +55,20 @@ const corsOptions = {
     optionsSuccessStatus: 204
 };
 
-app.use(cors(corsOptions)); // Ginamit ang bagong corsOptions
+app.use(cors(corsOptions)); 
 app.use(express.json());
 
-// --- SERVER START (TANGGAL NA ANG NODEMAILER CHECK) ---
-// Direktang simulan ang server.
+// --- SERVER START ---
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Pansinin: Ang email sending ay naka-off sa backend. Supabase Auth ang bahala.`);
 });
 
 
-// --- API ROUTES ---
+// --- API ROUTES (Walang pagbabago sa logic) ---
 
 // 1. POST /api/auth/signup - User Registration
-app.post('/api/auth/signup', async (req, res) => {
+app.post('/api/auth/signup', async (req, res) => { 
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -94,9 +91,7 @@ app.post('/api/auth/signup', async (req, res) => {
     usersData.push(newUser);
     console.log("[SERVER] New User Registered:", newUser.email);
     
-    // Kung gagamitin ang Supabase Auth sa frontend, ang Supabase na ang magpapadala ng verification email.
     res.status(201).json({ message: "Account created successfully. Please check your email for verification.", user: { id: newUser.id, name: newUser.name } });
-
 });
 
 // 2. POST /api/auth/login - User Login
@@ -124,7 +119,7 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 
-// 3. POST /api/bookings - Booking and Email Receipt
+// 3. POST /api/bookings - Booking
 app.post('/api/bookings', async (req, res) => {
     const bookingDetails = req.body;
     
@@ -142,9 +137,7 @@ app.post('/api/bookings', async (req, res) => {
     bookingsData.push(newBooking); 
     console.log(`[SERVER] Booking #${newBooking.id} saved.`);
 
-    // TANGGAL NA ANG EMAIL SENDING LOGIC (3.2)
     res.status(201).json({ message: "Booking successful! Walang email receipt na ipinadala (handled by Supabase or external system).", booking: newBooking });
-
 });
 
 
