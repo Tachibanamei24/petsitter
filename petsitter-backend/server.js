@@ -31,8 +31,8 @@ let sittersData = [
 // --- MIDDLEWARE ---
 // Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
 const allowedOrigins = [
-    // Iyong LIVE Render Backend API URL
-    'https://petsitter-x3nr.onrender.com/api', 
+    // ✅ INAYOS: LIVE Render Backend API URL (WALANG /api)
+    'https://petsitter-x3nr.onrender.com', 
     // ✅ GITHUB PAGES FRONTEND URL (Ito ang kailangan para maayos ang "Connection Failed" error)
     'https://tachibanamei24.github.io/petsitter', 
     // Iyong local development server ports (para sa testing)
