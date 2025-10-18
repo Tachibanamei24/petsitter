@@ -33,9 +33,9 @@ let sittersData = [
 /// To the fixed array (CORRECT):
 const allowedOrigins = [
     // LIVE Render Backend API URL (WALANG /api)
-    'https://petsitter-x3nr.onrender.com', 'https://petsitter-x3nr.onrender.com/api/sitters'
+    'https://petsitter-x3nr.onrender.com', 'https://petsitter-x3nr.onrender.com/api/sitters',
     // ✅ GITHUB PAGES FRONTEND URL - ITO ANG KAILANGAN!
-    'https://tachibanamei24.github.io', 
+    'https://tachibanamei24.github.io' , 
     // Maaaring kailangan mo rin ang specific repository path:
     'https://tachibanamei24.github.io/petsitter',
     // Local development server ports (para sa testing)
