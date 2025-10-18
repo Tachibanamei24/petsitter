@@ -30,15 +30,19 @@ let sittersData = [
 ];
 
 // --- MIDDLEWARE ---
-// Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
+/// To the fixed array (CORRECT):
 const allowedOrigins = [
-    // Ang URL ng iyong deployed Render Frontend (DAPAT AY ANG IYONG LIVE RENDER URL)
-    'https://petsitter-x3nr.onrender.com', // I-UPDATE ang URL na ito sa iyong final Render frontend URL
-    // Iyong local development server ports (para sa testing)
+    // LIVE Render Backend API URL (WALANG /api)
+    'https://petsitter-x3nr.onrender.com', 'https://petsitter-x3nr.onrender.com/api/sitters'
+    // ✅ GITHUB PAGES FRONTEND URL - ITO ANG KAILANGAN!
+    'https://tachibanamei24.github.io', 
+    // Maaaring kailangan mo rin ang specific repository path:
+    'https://tachibanamei24.github.io/petsitter',
+    // Local development server ports (para sa testing)
     'http://127.0.0.1:5500', 
     'http://localhost:5500', 
     'http://localhost:3000',
-    'http://127.0.0.1', // Iba pang default local host
+    'http://127.0.0.1', 
     'http://localhost'
 ];
 
