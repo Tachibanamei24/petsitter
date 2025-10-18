@@ -33,7 +33,7 @@ let sittersData = [
 // Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
 const allowedOrigins = [
     // Ang URL ng iyong deployed Render Frontend (DAPAT AY ANG IYONG LIVE RENDER URL)
-    'https://petsitter-x3nr.onrender.com', // I-UPDATE ang URL na ito sa iyong final Render frontend URL
+    'https://petsitter-x3nr.onrender.com/api', // I-UPDATE ang URL na ito sa iyong final Render frontend URL
     // Iyong local development server ports (para sa testing)
     'http://127.0.0.1:5500', 
     'http://localhost:5500', 
