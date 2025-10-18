@@ -31,13 +31,15 @@ let sittersData = [
 // --- MIDDLEWARE ---
 // Explicit CORS Configuration: KASAMA na ang lokal na testing environment (127.0.0.1)
 const allowedOrigins = [
-    // Ang URL ng iyong deployed Render Frontend (DAPAT AY ANG IYONG LIVE RENDER URL)
-    'https://petsitter-x3nr.onrender.com', // I-UPDATE ang URL na ito sa iyong final Render frontend URL
+    // Iyong LIVE Render Backend API URL
+    'https://petsitter-x3nr.onrender.com', 
+    // ✅ GITHUB PAGES FRONTEND URL (Ito ang kailangan para maayos ang "Connection Failed" error)
+    'https://tachibanamei24.github.io/petsitter', 
     // Iyong local development server ports (para sa testing)
     'http://127.0.0.1:5500', 
     'http://localhost:5500', 
     'http://localhost:3000',
-    'http://127.0.0.1', // Iba pang default local host
+    'http://127.0.0.1', 
     'http://localhost'
 ];
 
@@ -61,14 +63,14 @@ app.use(express.json());
 // --- SERVER START (TANGGAL NA ANG NODEMAILER CHECK) ---
 // Direktang simulan ang server.
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Pansinin: Ang email sending ay naka-off sa backend. Supabase Auth ang bahala.`);
+    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Pansinin: Ang email sending ay naka-off sa backend. Supabase Auth ang bahala.`);
 });
 
 
 // --- API ROUTES ---
 
-// 1. POST /api/auth/signup - User Registration (TANGGAL NA ANG WELCOME EMAIL)
+// 1. POST /api/auth/signup - User Registration
 app.post('/api/auth/signup', async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -92,9 +94,8 @@ app.post('/api/auth/signup', async (req, res) => {
     usersData.push(newUser);
     console.log("[SERVER] New User Registered:", newUser.email);
     
-    // --- RESPONSE (TANGGAL NA ANG EMAIL SENDING LOGIC) ---
-    // Kung gagamitin ang Supabase Auth sa frontend, ang Supabase na ang magpapadala ng verification email.
-    res.status(201).json({ message: "Account created successfully. Please check your email for verification.", user: { id: newUser.id, name: newUser.name } });
+    // Kung gagamitin ang Supabase Auth sa frontend, ang Supabase na ang magpapadala ng verification email.
+    res.status(201).json({ message: "Account created successfully. Please check your email for verification.", user: { id: newUser.id, name: newUser.name } });
 
 });
 
@@ -123,7 +124,7 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 
-// 3. POST /api/bookings - Booking and Email Receipt (TANGGAL NA ANG EMAIL)
+// 3. POST /api/bookings - Booking and Email Receipt
 app.post('/api/bookings', async (req, res) => {
     const bookingDetails = req.body;
     
@@ -141,7 +142,7 @@ app.post('/api/bookings', async (req, res) => {
     bookingsData.push(newBooking); 
     console.log(`[SERVER] Booking #${newBooking.id} saved.`);
 
-    // TANGGAL NA ANG EMAIL SENDING LOGIC (3.2)
+    // TANGGAL NA ANG EMAIL SENDING LOGIC (3.2)
     res.status(201).json({ message: "Booking successful! Walang email receipt na ipinadala (handled by Supabase or external system).", booking: newBooking });
 
 });
