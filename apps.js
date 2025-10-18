@@ -37,7 +37,7 @@ const allowedOrigins = [
     // ✅ GITHUB PAGES FRONTEND URL - ITO ANG KAILANGAN!
     'https://tachibanamei24.github.io' , 
     // Maaaring kailangan mo rin ang specific repository path:
-    'https://tachibanamei24.github.io/petsitter',
+    'https://tachibanamei24.github.io/petsitter', 'https://tachibanamei24.github.io/petsitter/#signup' ,
     // Local development server ports (para sa testing)
     'http://127.0.0.1:5500', 
     'http://localhost:5500', 
